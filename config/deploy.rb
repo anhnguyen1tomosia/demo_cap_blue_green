@@ -5,10 +5,10 @@ set :application, "blue_green_deployment"
 set :repo_url, "git@github.com:anhnguyen1tomosia/demo_cap_blue_green.git"
 
 # Default branch is :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-# set :deploy_to, "/var/www/my_app_name"
+set :deploy_to, "/root/blue_green_deployment_staging"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -37,16 +37,6 @@ append :linked_dirs, "shared/pids", "log"
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
-after 'git:check', 'deploy:set_deploy_to'
-namespace :deploy do
-  task :set_deploy_to do
-    on roles(:app) do
-      deploy_to = capture(:readlink, '/root/blue_green_deployment_staging')
-      set :deploy_to, deploy_to
-    end
-  end
-end
-
 set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
 set :unicorn_pid, -> { File.join(current_path, "shared", "pids", "unicorn.pid") }
 
@@ -59,7 +49,7 @@ end
 
 namespace :deploy do
   task :promote_release do
-    prefix = "/var/www"
+    prefix = "/root"
     on roles(:app) do
       staging = capture(:readlink, "#{prefix}/blue_green_deployment_staging")
 
