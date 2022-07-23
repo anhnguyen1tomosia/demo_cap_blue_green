@@ -1,6 +1,6 @@
 # Load DSL and set up stages
 require "capistrano/setup"
-
+require 'cap_blue_green_deploy'
 # Include default deployment tasks
 require "capistrano/deploy"
 

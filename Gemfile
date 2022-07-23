@@ -47,4 +47,5 @@ group :development do
   gem 'capistrano3-unicorn'
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
+  gem 'cap_blue_green_deploy', path: 'vendor/cap_blue_green_deploy'
 end

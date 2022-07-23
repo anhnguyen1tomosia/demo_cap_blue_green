@@ -1,3 +1,5 @@
+require 'pathname'
+
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.17.0"
 
@@ -50,16 +52,17 @@ namespace :deploy do
   task :promote_release do
     prefix = "/root"
     on roles(:app) do
-      staging = capture(:readlink, "#{prefix}/blue_green_deployment_staging")
 
-      if staging == "#{prefix}/blue_green_deployment_blue"
+      staging = "#{prefix}/blue_green_deployment_blue"
+
+      if false
         new_staging = "green"
         new_release = "blue"
       else
         new_staging = "blue"
         new_release = "green"
       end
-      execute(:sudo, :ln, "-sfn", "#{prefix}/blue_green_deployment_#{new_release}", "#{prefix}/blue_green_deployment_release")
+      # execute(:sudo, :ln, "-sfn", "#{prefix}/blue_green_deployment_#{new_release}", "#{prefix}/blue_green_deployment_release")
       execute(:sudo, :ln, "-sfn", "#{prefix}/blue_green_deployment_#{new_staging}", "#{prefix}/blue_green_deployment_staging")
     end
   end
