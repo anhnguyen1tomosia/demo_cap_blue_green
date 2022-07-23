@@ -5,7 +5,7 @@ set :application, "blue_green_deployment"
 set :repo_url, "git@github.com:anhnguyen1tomosia/demo_cap_blue_green.git"
 
 # Default branch is :master
-ask :branch, :main
+set :branch, :main
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/root/blue_green_deployment_staging"
@@ -22,9 +22,8 @@ set :deploy_to, "/root/blue_green_deployment_staging"
 
 # Default value for :linked_files is []
 # append :linked_files, "config/database.yml", 'config/master.key'
-append :linked_dirs, "tmp/pids", "log"
 # Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "tmp/webpacker", "public/system", "vendor", "storage"
+append :linked_dirs, "log", "tmp/pids", "tmp/sockets"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -38,7 +37,7 @@ append :linked_dirs, "tmp/pids", "log"
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
-set :unicorn_pid, -> { File.join(current_path, "shared", "pids", "unicorn.pid") }
+set :unicorn_pid, -> { File.join(current_path, "tmp", "pids", "unicorn.pid") }
 
 after 'deploy:publishing', 'deploy:restart'
 namespace :deploy do
