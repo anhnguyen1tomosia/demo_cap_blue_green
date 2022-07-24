@@ -19,7 +19,9 @@
 
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
+/tmp/sockets/*
 !/tmp/pids/
+!/tmp/sockets/
 !/tmp/pids/.keep
 
 # Ignore uploaded files in development.

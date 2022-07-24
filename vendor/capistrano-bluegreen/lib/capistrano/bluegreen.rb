@@ -30,9 +30,11 @@ module Capistrano
     end
 
     def live_task_run
-      current_live = fullpath_by_symlink fetch(:blue_green_live_dir)
-      do_symlink current_live, fetch(:blue_green_previous_dir) unless current_live.empty?
-      do_symlink release_path, fetch(:blue_green_live_dir)
+      current_live = fullpath_by_symlink current_path
+      previous_live = fullpath_by_symlink fetch(:blue_green_live_dir)
+
+      do_symlink previous_live, fetch(:blue_green_previous_dir) unless current_live.empty?
+      do_symlink current_live, fetch(:blue_green_live_dir)
     end
   end
 end

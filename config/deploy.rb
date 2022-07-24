@@ -25,7 +25,7 @@ set :deploy_to, "/root/blue_green_deployment_staging"
 # Default value for :linked_files is []
 # append :linked_files, "config/database.yml", 'config/master.key'
 # Default value for linked_dirs is []
-append :linked_dirs, "log", "tmp/pids", "tmp/sockets"
+append :linked_dirs, "log"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
