@@ -1,8 +1,9 @@
 PATH
-  remote: vendor/cap_blue_green_deploy
+  remote: vendor/capistrano-bluegreen
   specs:
-    cap_blue_green_deploy (1.1.3)
-      capistrano
+    capistrano-bluegreen (1.1.3)
+      capistrano (>= 3.9.0)
+      capistrano-bundler
 
 GEM
   remote: https://rubygems.org/
@@ -202,8 +203,8 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
-  cap_blue_green_deploy!
   capistrano
+  capistrano-bluegreen!
   capistrano-bundler
   capistrano-rails
   capistrano-rvm

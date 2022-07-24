@@ -41,29 +41,10 @@ append :linked_dirs, "log", "tmp/pids", "tmp/sockets"
 set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
 set :unicorn_pid, -> { File.join(current_path, "tmp", "pids", "unicorn.pid") }
 
-after 'deploy:publishing', 'deploy:restart'
+# after 'deploy:publishing', 'deploy:restart'
+
 namespace :deploy do
   task :restart do
     invoke 'unicorn:reload'
-  end
-end
-
-namespace :deploy do
-  task :promote_release do
-    prefix = "/root"
-    on roles(:app) do
-
-      staging = "#{prefix}/blue_green_deployment_blue"
-
-      if false
-        new_staging = "green"
-        new_release = "blue"
-      else
-        new_staging = "blue"
-        new_release = "green"
-      end
-      # execute(:sudo, :ln, "-sfn", "#{prefix}/blue_green_deployment_#{new_release}", "#{prefix}/blue_green_deployment_release")
-      execute(:sudo, :ln, "-sfn", "#{prefix}/blue_green_deployment_#{new_staging}", "#{prefix}/blue_green_deployment_staging")
-    end
   end
 end
