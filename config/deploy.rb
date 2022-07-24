@@ -41,10 +41,10 @@ append :linked_dirs, "log"
 set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
 set :unicorn_pid, -> { File.join(current_path, "tmp", "pids", "unicorn.pid") }
 
-# after 'deploy:publishing', 'deploy:restart'
+after 'deploy:publishing', 'deploy:restart'
 
 namespace :deploy do
   task :restart do
-    invoke 'unicorn:reload'
+    invoke 'unicorn:restart'
   end
 end

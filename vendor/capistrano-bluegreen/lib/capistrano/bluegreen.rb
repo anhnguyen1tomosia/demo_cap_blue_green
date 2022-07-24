@@ -11,6 +11,7 @@ module Capistrano
     def set_defaults
       set_if_empty :blue_green_live_dir, -> { File.join(deploy_to, 'current_live') }
       set_if_empty :blue_green_previous_dir, -> { File.join(deploy_to, 'previous_live') }
+      set_if_empty :blue_green_health_check, -> { 'http://localhost:55001/' }
     end
 
     def fullpath_by_symlink sym
@@ -35,6 +36,10 @@ module Capistrano
 
       do_symlink previous_live, fetch(:blue_green_previous_dir) unless current_live.empty?
       do_symlink current_live, fetch(:blue_green_live_dir)
+    end
+
+    def live_pid(path)
+      "`cat #{path}`"
     end
   end
 end
