@@ -11,11 +11,10 @@ module Capistrano
     end
 
     def set_defaults
-      set_if_empty :blue_green_live_dir, -> { File.join(deploy_to, 'current_live') }
-      set_if_empty :blue_green_previous_dir, -> { File.join(deploy_to, 'previous_live') }
-      set_if_empty :blue_green_health_check_path, -> { 'http://localhost:55001/' }
-      set_if_empty :blue_green_health_check_count, -> { 5 }
-
+      set_if_empty :bg_live_dir, -> { File.join(deploy_to, 'current_live') }
+      set_if_empty :bg_previous_dir, -> { File.join(deploy_to, 'previous_live') }
+      set_if_empty :bg_health_check_path, -> { 'http://localhost:55001/' }
+      set_if_empty :bg_health_check_count, -> { 5 }
     end
 
     def fullpath_by_symlink sym
@@ -36,15 +35,15 @@ module Capistrano
 
     def live_task_run
       current_live = fullpath_by_symlink current_path
-      previous_live = fullpath_by_symlink fetch(:blue_green_live_dir)
+      previous_live = fullpath_by_symlink fetch(:bg_live_dir)
 
-      do_symlink previous_live, fetch(:blue_green_previous_dir) unless current_live.empty?
-      do_symlink current_live, fetch(:blue_green_live_dir)
+      do_symlink previous_live, fetch(:bg_previous_dir) unless current_live.empty?
+      do_symlink current_live, fetch(:bg_live_dir)
     end
 
     def health_check(&block)
-      health_check_path  = fetch(:blue_green_health_check_path)
-      health_check_count = fetch(:blue_green_health_check_count)
+      health_check_path  = fetch(:bg_health_check_path)
+      health_check_count = fetch(:bg_health_check_count)
 
       uri = URI(health_check_path)
       res = Net::HTTP.get_response(uri)
@@ -64,6 +63,24 @@ module Capistrano
             break
           end
         end
+      end
+    end
+
+    def rollback_task_run
+      previous_live = fullpath_by_symlink fetch(:bg_previous_dir)
+
+      unless previous_live.empty?
+        backend.info previous_live
+        current_path = previous_live
+        
+        set :unicorn_config_path, -> { File.join(previous_live, "config", "unicorn.rb") }
+        set :unicorn_pid, -> { File.join(previous_live, "tmp", "pids", "unicorn.pid") }
+
+        Rake::Task["unicorn:restart"].execute
+
+        do_symlink previous_live, fetch(:bg_live_dir)
+      else
+        backend.info "no old release to rollback"
       end
     end
 
