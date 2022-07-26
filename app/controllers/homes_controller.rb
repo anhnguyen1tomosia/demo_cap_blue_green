@@ -2,7 +2,7 @@ class HomesController < ApplicationController
 
   # GET /homes
   def index
-    @homes = { a: 3 }
+    @homes = { a: 1 }
     render json: @homes
   end
 end

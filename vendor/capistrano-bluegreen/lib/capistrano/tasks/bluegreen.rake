@@ -1,13 +1,11 @@
 git_plugin = self
 
-require 'uri'
-require 'net/http'
 
 namespace :deploy do
   namespace :blue_green do
     desc "Make the current app live"
     task :live do
-      on roles(:app) do
+      on roles(:app) do   
         uri = URI(fetch(:blue_green_health_check))
         res = Net::HTTP.get_response(uri)
         health_check_count = 1
@@ -15,11 +13,10 @@ namespace :deploy do
         loop do
           sleep 1
           health_check_count += 1
-          puts "Health check #{fetch(:blue_green_health_check)}"
+          info "Health checking ... #{fetch(:blue_green_health_check)}"
           
           if res.is_a?(Net::HTTPSuccess)
-            info "Server 200"
-
+            info "#{fetch(:blue_green_health_check)} response status 200"
             unicorn_pid = "#{fetch(:blue_green_live_dir)}/tmp/pids/unicorn.pid"
 
             if test("[ -e #{unicorn_pid} ]")
@@ -39,8 +36,7 @@ namespace :deploy do
           else
             break if health_check_count >= 5
           end
-        end
-        
+        end     
       end
     end
 
@@ -48,6 +44,15 @@ namespace :deploy do
     task :pre do
       on roles(:app) do
         # Do nothing
+      end
+    end
+
+    desc "Health check blue/screen"
+    task :health_check do
+      on roles(:app) do
+        git_plugin.health_check do
+          info "Successful"
+        end
       end
     end
 

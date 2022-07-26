@@ -1,5 +1,7 @@
 require 'capistrano/bundler'
 require 'capistrano/plugin'
+require 'uri'
+require 'net/http'
 
 module Capistrano
   class Bluegreen < Capistrano::Plugin
@@ -11,7 +13,9 @@ module Capistrano
     def set_defaults
       set_if_empty :blue_green_live_dir, -> { File.join(deploy_to, 'current_live') }
       set_if_empty :blue_green_previous_dir, -> { File.join(deploy_to, 'previous_live') }
-      set_if_empty :blue_green_health_check, -> { 'http://localhost:55001/' }
+      set_if_empty :blue_green_health_check_path, -> { 'http://localhost:55001/' }
+      set_if_empty :blue_green_health_check_count, -> { 5 }
+
     end
 
     def fullpath_by_symlink sym
@@ -36,6 +40,31 @@ module Capistrano
 
       do_symlink previous_live, fetch(:blue_green_previous_dir) unless current_live.empty?
       do_symlink current_live, fetch(:blue_green_live_dir)
+    end
+
+    def health_check(&block)
+      health_check_path  = fetch(:blue_green_health_check_path)
+      health_check_count = fetch(:blue_green_health_check_count)
+
+      uri = URI(health_check_path)
+      res = Net::HTTP.get_response(uri)
+
+      loop do
+        sleep 1
+        health_check_count += 1
+        backend.info "Health checking ... #{health_check_path}"
+        
+        if res.is_a?(Net::HTTPSuccess)
+          backend.info "Response status 200 #{health_check_path}"
+          yield block
+          break
+        else
+          if health_check_count >= 5
+            backend.info "Run health check #{health_check_count} time, but not response status 200"
+            break
+          end
+        end
+      end
     end
 
     def live_pid(path)
