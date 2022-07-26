@@ -18,21 +18,21 @@ namespace :deploy do
           puts "Health check #{fetch(:blue_green_health_check)}"
           
           if res.is_a?(Net::HTTPSuccess)
-            puts "Server 200"
+            info "Server 200"
 
-            unicorn_pid = "#{fetch(:blue_green_live_dir)}/tmp/pids/unicorn.pid"
+            # unicorn_pid = "#{fetch(:blue_green_live_dir)}/tmp/pids/unicorn.pid"
 
-            if test("[ -e #{unicorn_pid} ]")
-              if test("kill -0 #{git_plugin.live_pid(unicorn_pid)}")
-                info "stopping unicorn..."
-                execute :kill, "-s QUIT", git_plugin.live_pid(unicorn_pid)
-              else
-                info "cleaning up dead unicorn pid..."
-                execute :rm, unicorn_pid
-              end
-            end
+            # if test("[ -e #{unicorn_pid} ]")
+            #   if test("kill -0 #{git_plugin.live_pid(unicorn_pid)}")
+            #     info "stopping unicorn..."
+            #     execute :kill, "-s QUIT", git_plugin.live_pid(unicorn_pid)
+            #   else
+            #     info "cleaning up dead unicorn pid..."
+            #     execute :rm, unicorn_pid
+            #   end
+            # end
 
-            git_plugin.live_task_run
+            # git_plugin.live_task_run
             break
           else
             break if health_check_count >= 5
