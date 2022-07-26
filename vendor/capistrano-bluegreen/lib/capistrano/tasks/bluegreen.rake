@@ -30,6 +30,8 @@ namespace :deploy do
                 info "cleaning up dead unicorn pid..."
                 execute :rm, unicorn_pid
               end
+            else
+              info "unicorn live not running..."
             end
 
             git_plugin.live_task_run
