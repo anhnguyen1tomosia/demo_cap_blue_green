@@ -4,6 +4,7 @@ PATH
     capistrano-bluegreen (1.1.3)
       capistrano (>= 3.9.0)
       capistrano-bundler
+      capistrano3-unicorn (= 0.2.1)
 
 GEM
   remote: https://rubygems.org/
@@ -208,7 +209,6 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano-rvm
-  capistrano3-unicorn
   debug
   puma (~> 5.0)
   rails (~> 7.0.3)

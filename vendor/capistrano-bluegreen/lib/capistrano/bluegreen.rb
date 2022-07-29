@@ -1,5 +1,6 @@
 require 'capistrano/bundler'
 require 'capistrano/plugin'
+require "capistrano3/unicorn"
 require 'uri'
 require 'net/http'
 

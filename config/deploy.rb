@@ -40,10 +40,4 @@ append :linked_dirs, "log"
 # set :ssh_options, verify_host_key: :secure
 set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
 
-after 'deploy:publishing', 'deploy:restart'
-
-namespace :deploy do
-  task :restart do
-    invoke 'unicorn:restart'
-  end
-end
+after 'deploy:publishing', 'deploy:blue_green:restart'

@@ -44,7 +44,6 @@ end
 group :development do
   gem "capistrano", require: false
   gem "capistrano-rails", require: false
-  gem 'capistrano3-unicorn'
   gem 'capistrano-bundler'
   gem 'capistrano-rvm'
   gem 'capistrano-bluegreen', path: 'vendor/capistrano-bluegreen'
