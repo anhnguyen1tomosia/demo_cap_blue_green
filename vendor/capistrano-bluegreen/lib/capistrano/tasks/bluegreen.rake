@@ -15,7 +15,6 @@ namespace :deploy do
       on roles(:app) do   
         git_plugin.health_check do
           unicorn_pid = "#{fetch(:bg_live_unicorn_pid)}"
-
           if test("[ -e #{unicorn_pid} ]")
             if test("kill -0 #{git_plugin.live_pid(unicorn_pid)}")
               info "stopping unicorn..."
@@ -36,7 +35,8 @@ namespace :deploy do
     desc "Deploy your project to pre environment"
     task :pre do
       on roles(:app) do
-        # Do nothing
+        set :unicorn_config_path, -> { File.join(release_path, 'config', 'unicorn.rb') }
+        set :unicorn_pid, -> { File.join(release_path, "tmp", "pids", "unicorn.pid") }
       end
     end
 
