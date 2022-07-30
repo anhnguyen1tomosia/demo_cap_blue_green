@@ -16,6 +16,7 @@ module Capistrano
       set_if_empty :bg_previous_dir, -> { File.join(deploy_to, 'previous_live') }
       set_if_empty :bg_health_check_path, -> { 'http://localhost:55001/' }
       set_if_empty :bg_health_check_count, -> { 5 }
+      set_if_empty :bg_live_unicorn_pid, -> { File.join('current_live', "tmp", "pids", "unicorn.pid") }
     end
 
     def fullpath_by_symlink sym

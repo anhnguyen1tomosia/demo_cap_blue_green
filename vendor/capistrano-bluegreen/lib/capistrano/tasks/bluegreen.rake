@@ -14,7 +14,7 @@ namespace :deploy do
     task :live do
       on roles(:app) do   
         git_plugin.health_check do
-          unicorn_pid = "#{fetch(:bg_live_dir)}/tmp/pids/unicorn.pid"
+          unicorn_pid = "#{fetch(:bg_live_unicorn_pid)}"
 
           if test("[ -e #{unicorn_pid} ]")
             if test("kill -0 #{git_plugin.live_pid(unicorn_pid)}")
